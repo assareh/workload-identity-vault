@@ -30,6 +30,9 @@ workload identity + [agent hooks](https://developer.hashicorp.com/terraform/clou
 
 Trust is determined by the per run JWT token. The agents themselves are given no permissions. 
 
+## Diagrams
+![](./workload-identity-vault-first-draft.png)
+
 ## Demo
 
 This repo:

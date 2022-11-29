@@ -1,77 +1,3 @@
-provider "tfe" {
-}
-
-resource "tfe_agent_pool" "workload-identity" {
-  name         = "workload-identity"
-  organization = var.organization
-}
-
-resource "tfe_agent_token" "workload-identity-agent-token" {
-  agent_pool_id = tfe_agent_pool.workload-identity.id
-  description   = "terraform"
-}
-
-resource "tfe_workspace" "tfc-demo-workload-identity" {
-  name           = var.demo_workspace_name
-  organization   = var.organization
-  queue_all_runs = false
-  execution_mode = "agent"
-  agent_pool_id  = tfe_agent_pool.workload-identity.id
-
-  vcs_repo {
-    identifier     = var.vcs_identifier
-    oauth_token_id = var.oauth_token_id
-  }
-}
-
-resource "tfe_variable" "workload-identity-audience" {
-  key          = "TFC_WORKLOAD_IDENTITY_AUDIENCE"
-  value        = "vault.workload.identity"
-  category     = "env"
-  workspace_id = tfe_workspace.tfc-demo-workload-identity.id
-  description  = "Sets the audience of the identity token. Needed to enable workload identity functionality."
-}
-
-resource "tfe_variable" "vault_addr" {
-  key          = "VAULT_ADDR"
-  value        = module.vault.vault_addr
-  category     = "env"
-  workspace_id = tfe_workspace.tfc-demo-workload-identity.id
-  description  = "The address of your Vault instance. This is needed for when the instance is reached out to for JWT authentication in pre hook scripts."
-}
-
-resource "tfe_variable" "workload-identity-plan-role" {
-  key          = "TFC_VAULT_PLAN_ROLE"
-  value        = "tfc-demo-plan-role"
-  category     = "env"
-  workspace_id = tfe_workspace.tfc-demo-workload-identity.id
-  description  = "The name of the role that should be assumed when generating the Vault token for a plan."
-}
-
-resource "tfe_variable" "workload-identity-apply-role" {
-  key          = "TFC_VAULT_APPLY_ROLE"
-  value        = "tfc-demo-apply-role"
-  category     = "env"
-  workspace_id = tfe_workspace.tfc-demo-workload-identity.id
-  description  = "The name of the role that should be assumed when generating the Vault token for a apply."
-}
-
-resource "tfe_variable" "prefix" {
-  key          = "prefix"
-  value        = "demo"
-  category     = "terraform"
-  workspace_id = tfe_workspace.tfc-demo-workload-identity.id
-  description  = "This prefix will be included in the name of most resources."
-}
-
-resource "tfe_variable" "region" {
-  key          = "region"
-  value        = var.aws_region
-  category     = "terraform"
-  workspace_id = tfe_workspace.tfc-demo-workload-identity.id
-  description  = "The region where the resources are created."
-}
-
 provider "aws" {
   region = var.aws_region
 }
@@ -114,7 +40,7 @@ resource "aws_ecs_task_definition" "tfc_agent" {
     [
       {
         name : "tfc-agent"
-        image : "assareh/tfc-agent:latest"
+        image : "assareh/tfc-agent-custom:latest"
         essential : true
         cpu : var.task_def_cpu
         memory : var.task_def_mem
@@ -202,21 +128,6 @@ data "aws_iam_policy_document" "agent_assume_role_policy_definition" {
   }
 }
 
-# resource "aws_iam_role_policy" "agent_policy" {
-#   name = "tfc-agent-policy"
-#   role = aws_iam_role.agent.id
-
-#   policy = data.aws_iam_policy_document.agent_policy_definition.json
-# }
-
-# data "aws_iam_policy_document" "agent_policy_definition" {
-#   statement {
-#     effect    = "Allow"
-#     actions   = ["sts:AssumeRole"]
-#     resources = [aws_iam_role.terraform_dev_role.arn]
-#   }
-# }
-
 resource "aws_iam_role_policy_attachment" "agent_task_policy" {
   role       = aws_iam_role.agent.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
@@ -262,12 +173,6 @@ resource "aws_route_table" "main" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.main.id
   }
-
-  # to peer to an HVN add your route here, for example
-  #   route {
-  #     cidr_block                = "172.25.16.0/24"
-  #     vpc_peering_connection_id = "pcx-07ee5501175307837"
-  #   }
 }
 
 resource "aws_route_table_association" "main" {
