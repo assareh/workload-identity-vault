@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Revoking plan credentials..."
+echo "Revoking apply credentials..."
 
 export VAULT_TOKEN=$(cat ~/.vault-token)
 
@@ -14,5 +14,5 @@ if test "$response" != "0"; then
 elif test "$RESPONSE" != ""; then
    echo "The curl command failed with: $RESPONSE. Credentials may not have been revoked, or were already revoked."
 else
-   echo "Plan credentials revoked"
+   echo "Apply credentials revoked"
 fi
