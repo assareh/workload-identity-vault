@@ -49,6 +49,5 @@ Requires:
 In this example the tfc-agent can be run anywhere that has access to Vault. As opposed to [this tfc-agent-ecs example](https://github.com/assareh/tfc-agent/tree/master/tfc-agent-ecs), with workload identity the agent does not need to be run in the cloud with IAM because Terraform Cloud Workload Identity (JWT tokens) are used to establish trust. 
 
 TODO
-* stable ip
-* container registry
-* bring in vault module and use vault provider - remove public 8200 
+* AWS container registry instead of docker
+* error handling in hooks

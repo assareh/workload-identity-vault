@@ -34,7 +34,7 @@ resource "tfe_variable" "workload-identity-audience" {
 
 resource "tfe_variable" "vault_addr" {
   key          = "VAULT_ADDR"
-  value        = module.vault.vault_addr
+  value        = module.vault.vault_private_addr
   category     = "env"
   workspace_id = tfe_workspace.tfc-demo-workload-identity.id
   description  = "The address of your Vault instance. This is needed for when the instance is reached out to for JWT authentication in pre hook scripts."

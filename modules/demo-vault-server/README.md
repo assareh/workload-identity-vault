@@ -1,0 +1,1 @@
+This is copied/derived from https://github.com/hashicorp/vault-lambda-extension/tree/main/quick-start/terraform
