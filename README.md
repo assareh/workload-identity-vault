@@ -5,8 +5,8 @@ This repo:
 
 Requires:
 * TFE_TOKEN for `tfe` provider auth
-* fork the hashicat-aws repo
-* see tfvars
+* fork the [hashicat-aws](https://github.com/hashicorp/hashicat-aws) repo to your github
+* provided values for required [tfvars](./variables.tf)
 
 The agent can be run anywhere that has access to Vault. It does not need to be in the cloud with IAM because Terraform Cloud Workload Identity (JWT tokens) are used for trust. 
 

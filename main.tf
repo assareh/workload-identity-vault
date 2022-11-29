@@ -74,10 +74,6 @@ resource "tfe_variable" "region" {
 
 provider "aws" {
   region = var.aws_region
-
-  default_tags {
-    tags = local.common_tags
-  }
 }
 
 resource "aws_ecr_repository" "main" {
