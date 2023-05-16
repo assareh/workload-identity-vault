@@ -1,3 +1,5 @@
+# NOTE: This is now a native feature of Terraform Cloud, see https://www.hashicorp.com/blog/terraform-cloud-adds-dynamic-provider-credentials-vault-official-cloud-providers and https://developer.hashicorp.com/terraform/cloud-docs/workspaces/dynamic-provider-credentials/vault-backed
+
 # AWS Dynamic Credentials for Terraform Cloud with Vault and Workload Identity
 
 This repository documents an example workflow for delivering just in time AWS credentials for Terraform provisioning. HashiCorp Vault is used to issue unique one time use AWS credentials. The novel aspects of the approach documented here are leveraging Terraform Cloud run identity to broker trust, and Terraform Cloud Agent hooks to pass credentials outside of terraform state, as well as revoke credentials immediately upon completion of the terraform run.
